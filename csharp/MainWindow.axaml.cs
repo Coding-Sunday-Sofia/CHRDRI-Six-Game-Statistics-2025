@@ -6,13 +6,48 @@ using System.Linq;
 using System.Text.Json;
 
 using Avalonia;
+using Avalonia.Media;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Shapes;
+using Avalonia.Collections;
 
 namespace Game_Six;
 
 public partial class MainWindow : Window {
+	private Button CreateHexButton(int row, int col, double width, double height) {
+		var polygon = new Polygon {
+			Points = new[]
+			{
+				new Point(width/2,0),
+				new Point(width, height/4),
+				new Point(width, 3*height/4),
+				new Point(width/2, height),
+				new Point(0, 3*height/4),
+				new Point(0, height/4)
+			},
+			Fill = Brushes.Yellow,
+			Stroke = Brushes.Black,
+			StrokeThickness = 1
+		};
+
+		var button = new Button {
+			Width = width,
+			Height = height,
+			Background = Brushes.Transparent,
+			Content = polygon
+		};
+
+		button.Click += (sender, e) => {
+			Console.WriteLine($"Button clicked at row {row}, column {col}");
+		};
+
+		return button;
+	}
+
 	private int turn = 0;
 	private string gguid = "";
 	private char[][] board = null;
@@ -23,7 +58,7 @@ public partial class MainWindow : Window {
 
 	private void onMainWindowPointerPressed(object? sender, PointerPressedEventArgs e) {
 		turn++;
-	
+
 		HttpClient client = new HttpClient();
 
 		string url = "http://localhost:8080/index.php";
@@ -50,8 +85,42 @@ public partial class MainWindow : Window {
 		gguid = Guid.NewGuid().ToString();
 	}
 
+	private int rows = 42;
+	private int cols = 42;
+	private Button[,] hexButtons;
+
 	public MainWindow() {
 		InitializeComponent();
 		reset();
+
+		Width = 1260;
+		Height = 1260;
+
+		var canvas = new Canvas();
+		Content = canvas;
+
+		hexButtons = new Button[rows, cols];
+
+		double hexHeight = 30;
+		double hexWidth = Math.Sqrt(3) / 2 * hexHeight;
+
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				var button = CreateHexButton(row, col, hexWidth, hexHeight);
+
+				// Flat-topped hexagon placement
+				double x = col * hexWidth;
+				double y = row * hexHeight * 0.45 * Math.Sqrt(3);
+				if (row % 2 == 1) {
+					x += hexWidth * 0.5;
+				}
+
+				Canvas.SetLeft(button, x);
+				Canvas.SetTop(button, y);
+
+				canvas.Children.Add(button);
+				hexButtons[row, col] = button;
+			}
+		}
 	}
 }

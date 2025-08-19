@@ -6,7 +6,7 @@
         x:Class="Game_Six.MainWindow"
         PointerPressed="onMainWindowPointerPressed"
         Title="Game Six">
-        
-        
+
+
         
 </Window>

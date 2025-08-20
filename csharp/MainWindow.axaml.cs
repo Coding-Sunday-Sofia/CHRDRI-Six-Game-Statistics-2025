@@ -29,7 +29,7 @@ public partial class MainWindow : Window {
 				new Point(0, 3*height/4),
 				new Point(0, height/4)
 			},
-			Fill = Brushes.Yellow,
+			Fill = Brushes.White,
 			Stroke = Brushes.Black,
 			StrokeThickness = 1
 		};
@@ -38,6 +38,8 @@ public partial class MainWindow : Window {
 			Width = width,
 			Height = height,
 			Background = Brushes.Transparent,
+			Padding = new Avalonia.Thickness(0),
+			BorderThickness = new Avalonia.Thickness(0),
 			Content = polygon
 		};
 
@@ -50,15 +52,13 @@ public partial class MainWindow : Window {
 
 	private int turn = 0;
 	private string gguid = "";
-	private char[][] board = null;
+	private char[][] board = {};
 
 	private static async void send(HttpClient client, string url, StringContent content) {
-		await client.PostAsync(url, content);
+		try{await client.PostAsync(url, content);}catch(Exception ex){}
 	}
 
 	private void onMainWindowPointerPressed(object? sender, PointerPressedEventArgs e) {
-		turn++;
-
 		HttpClient client = new HttpClient();
 
 		string url = "http://localhost:8080/index.php";
@@ -82,7 +82,22 @@ public partial class MainWindow : Window {
 				board[i][j] = 'E';
 			}
 		}
+		board[21][21] = 'B';
+		board[21][22] = 'R';
 		gguid = Guid.NewGuid().ToString();
+	}
+
+	private void show() {
+		for(int i=0; i<board.Length; i++) {
+			for(int j=0; j<board[i].Length; j++) {
+				switch(board[i][j]) {
+					case 'E': ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Yellow); break;
+					case 'B': ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Blue); break;
+					case 'R': ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Red); break;
+					default: ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.White); break;
+				}
+			}
+		}
 	}
 
 	private int rows = 42;
@@ -91,7 +106,6 @@ public partial class MainWindow : Window {
 
 	public MainWindow() {
 		InitializeComponent();
-		reset();
 
 		Width = 1260;
 		Height = 1260;
@@ -122,5 +136,8 @@ public partial class MainWindow : Window {
 				hexButtons[row, col] = button;
 			}
 		}
+		reset();
+		show();
 	}
 }
+

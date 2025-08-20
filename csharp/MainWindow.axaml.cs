@@ -47,6 +47,21 @@ public partial class MainWindow : Window {
 			for(int i=0; i<board.Length; i++) {
 				for(int j=0; j<board[i].Length; j++) {
 					if(sender == hexButtons[i,j]) {
+						if(turn >= 40) {
+							Title = "No more moves!";
+							return;
+						}
+
+						if(board[i][j] != 'E') {
+							Title = "The tile is occupied!";
+							return;
+						}
+
+						if(hasNeighbors(i,j) == false) {
+							Title = "The tile shoud be next to the others!";
+							return;
+						}
+
 						turn++;
 						board[i][j] = (turn%2==0)?'R':'B';
 						break;
@@ -65,7 +80,89 @@ public partial class MainWindow : Window {
 	private char[][] board = {};
 
 	private static async void send(HttpClient client, string url, StringContent content) {
-		try{await client.PostAsync(url, content);}catch(Exception ex){}
+		try {
+			await client.PostAsync(url, content);
+		} catch(Exception ex) {}
+	}
+
+	private bool isNeighbor(int x, int y) {
+		if(x < 0) {
+			return false;
+		}
+		if(y < 0) {
+			return false;
+		}
+		if(x >= board.Length) {
+			return false;
+		}
+		if(y >= board[x].Length) {
+			return false;
+		}
+
+		if(board[x][y] == 'R' || board[x][y] == 'B') {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool hasNeighbors(int x, int y) {
+		if(x%2 != 0) {
+			if(isNeighbor(x-1, y) == true) {
+				return true;
+			}
+			if(isNeighbor(x-1, y+1) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y+1) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y+1) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y-1) == true) {
+				return true;
+			}
+			/*
+			((Polygon)hexButtons[x-1,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-1,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x+1,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x+1,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
+			*/
+		} else {
+			if(isNeighbor(x-1, y-1) == true) {
+				return true;
+			}
+			if(isNeighbor(x-1, y) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y+1) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y-1) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y-1) == true) {
+				return true;
+			}
+			/*
+			((Polygon)hexButtons[x-1,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-1,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x+1,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x+1,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
+			*/
+		}
+		return false;
 	}
 
 	private void send() {
@@ -101,10 +198,18 @@ public partial class MainWindow : Window {
 		for(int i=0; i<board.Length; i++) {
 			for(int j=0; j<board[i].Length; j++) {
 				switch(board[i][j]) {
-					case 'E': ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Yellow); break;
-					case 'B': ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Blue); break;
-					case 'R': ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Red); break;
-					default: ((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.White); break;
+				case 'E':
+					((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Yellow);
+					break;
+				case 'B':
+					((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Blue);
+					break;
+				case 'R':
+					((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.Red);
+					break;
+				default:
+					((Polygon)hexButtons[i,j].Content).Fill=new SolidColorBrush(Colors.White);
+					break;
 				}
 			}
 		}

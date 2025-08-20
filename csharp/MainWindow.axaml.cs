@@ -44,7 +44,17 @@ public partial class MainWindow : Window {
 		};
 
 		button.Click += (sender, e) => {
-			Console.WriteLine($"Button clicked at row {row}, column {col}");
+			for(int i=0; i<board.Length; i++) {
+				for(int j=0; j<board[i].Length; j++) {
+					if(sender == hexButtons[i,j]) {
+						turn++;
+						board[i][j] = (turn%2==0)?'R':'B';
+						break;
+					}
+				}
+			}
+			show();
+			send();
 		};
 
 		return button;
@@ -58,7 +68,7 @@ public partial class MainWindow : Window {
 		try{await client.PostAsync(url, content);}catch(Exception ex){}
 	}
 
-	private void onMainWindowPointerPressed(object? sender, PointerPressedEventArgs e) {
+	private void send() {
 		HttpClient client = new HttpClient();
 
 		string url = "http://localhost:8080/index.php";

@@ -4,9 +4,5 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         x:Class="Game_Six.MainWindow"
-        PointerPressed="onMainWindowPointerPressed"
         Title="Game Six">
-
-
-        
 </Window>

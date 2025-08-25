@@ -47,6 +47,10 @@ public partial class MainWindow : Window {
 			for(int i=0; i<board.Length; i++) {
 				for(int j=0; j<board[i].Length; j++) {
 					if(sender == hexButtons[i,j]) {
+						if(gameOver == true) {
+							return;
+						}
+
 						if(turn >= 40) {
 							Title = "No more moves!";
 							return;
@@ -72,6 +76,12 @@ public partial class MainWindow : Window {
 						turn++;
 						playing = (turn%2==0)?'B':'R';
 						board[i][j] = playing;
+
+						if(isGameOver() == true) {
+							Title = "Game over!";
+							gameOver = true;
+						}
+
 						break;
 					}
 				}
@@ -87,6 +97,7 @@ public partial class MainWindow : Window {
 	private string gguid = "";
 	private char[][] board = {};
 	private char playing = '\0';
+	private bool gameOver = true;
 
 	private static async void send(HttpClient client, string url, StringContent content) {
 		try {
@@ -109,6 +120,82 @@ public partial class MainWindow : Window {
 		}
 
 		if(board[x][y] == tile) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool hasCircle(char tile) {
+		for(int i=0; i<board.Length; i++) {
+			for(int j=0; j<board[i].Length; j++) {
+				if(x%2 != 0) {
+					if(isNeighbor(x-1, y, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x-1, y+1, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x, y+1, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x+1, y+1, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x+1, y, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x, y-1, tile) == false) {
+						continue;
+					}
+
+					return true;
+				} else {
+					if(isNeighbor(x-1, y-1, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x-1, y, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x, y+1, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x+1, y, tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x+1, y-1), tile) == false) {
+						continue;
+					}
+					if(isNeighbor(x, y-1, tile) == false) {
+						continue;
+					}
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private bool hasLine(char tile) {
+		return false;
+	}
+
+	private bool hasTriangle(char tile) {
+		return false;
+	}
+
+	private bool isGameOver() {
+		if(hasCircle(playing)) {
+			return true;
+		}
+
+		if(hasLine(playing)) {
+			return true;
+		}
+
+		if(hasTriangle(playing)) {
 			return true;
 		}
 
@@ -266,6 +353,7 @@ public partial class MainWindow : Window {
 		board[21][22] = 'R';
 		gguid = Guid.NewGuid().ToString();
 		playing = 'R';
+		gameOver = false;
 	}
 
 	private void show() {

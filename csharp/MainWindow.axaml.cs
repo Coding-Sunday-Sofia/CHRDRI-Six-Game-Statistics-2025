@@ -50,6 +50,8 @@ public partial class MainWindow : Window {
 						if(turn >= 40) {
 							Title = "No more moves!";
 							return;
+						} else {
+							//TODO Implement move pices logic.
 						}
 
 						if(board[i][j] != 'E') {
@@ -62,8 +64,14 @@ public partial class MainWindow : Window {
 							return;
 						}
 
+						if(turn == 0 && hasSameNeighbor(i,j,playing)) {
+							Title = "In first turn avoid your color!";
+							return;
+						}
+
 						turn++;
-						board[i][j] = (turn%2==0)?'R':'B';
+						playing = (turn%2==0)?'B':'R';
+						board[i][j] = playing;
 						break;
 					}
 				}
@@ -78,11 +86,76 @@ public partial class MainWindow : Window {
 	private int turn = 0;
 	private string gguid = "";
 	private char[][] board = {};
+	private char playing = '\0';
 
 	private static async void send(HttpClient client, string url, StringContent content) {
 		try {
 			await client.PostAsync(url, content);
 		} catch(Exception ex) {}
+	}
+
+	private bool isNeighbor(int x, int y, char tile) {
+		if(x < 0) {
+			return false;
+		}
+		if(y < 0) {
+			return false;
+		}
+		if(x >= board.Length) {
+			return false;
+		}
+		if(y >= board[x].Length) {
+			return false;
+		}
+
+		if(board[x][y] == tile) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool hasSameNeighbor(int x, int y, char tile) {
+		if(x%2 != 0) {
+			if(isNeighbor(x-1, y, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x-1, y+1, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y+1, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y+1, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y-1, tile) == true) {
+				return true;
+			}
+		} else {
+			if(isNeighbor(x-1, y-1, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x-1, y, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y+1, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x+1, y-1, tile) == true) {
+				return true;
+			}
+			if(isNeighbor(x, y-1, tile) == true) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private bool isNeighbor(int x, int y) {
@@ -192,6 +265,7 @@ public partial class MainWindow : Window {
 		board[21][21] = 'B';
 		board[21][22] = 'R';
 		gguid = Guid.NewGuid().ToString();
+		playing = 'R';
 	}
 
 	private void show() {

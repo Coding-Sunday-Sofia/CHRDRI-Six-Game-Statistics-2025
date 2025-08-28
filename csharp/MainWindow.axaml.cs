@@ -127,50 +127,30 @@ public partial class MainWindow : Window {
 	}
 
 	private bool hasCircle(char tile) {
-		for(int i=0; i<board.Length; i++) {
-			for(int j=0; j<board[i].Length; j++) {
+		for(int x=0; x<board.Length; x++) {
+			for(int y=0; y<board[x].Length; y++) {
+				int six = 0;
+				
 				if(x%2 != 0) {
-					if(isNeighbor(x-1, y, tile) == false) {
-						continue;
+					six += isNeighbor(x-1, y, tile) ? 1 : 0;
+					six += isNeighbor(x-1, y+1, tile) ? 1 : 0;
+					six += isNeighbor(x, y+1, tile) ? 1 : 0;
+					six += isNeighbor(x+1, y+1, tile) ? 1 : 0;
+					six += isNeighbor(x+1, y, tile) ? 1 : 0;
+					six += isNeighbor(x, y-1, tile) ? 1 : 0;
+					if(six == 6) {
+						return true;
 					}
-					if(isNeighbor(x-1, y+1, tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x, y+1, tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x+1, y+1, tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x+1, y, tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x, y-1, tile) == false) {
-						continue;
-					}
-
-					return true;
 				} else {
-					if(isNeighbor(x-1, y-1, tile) == false) {
-						continue;
+					six += isNeighbor(x-1, y-1, tile) ? 1 : 0;
+					six += isNeighbor(x-1, y, tile) ? 1 : 0;
+					six += isNeighbor(x, y+1, tile) ? 1 : 0;
+					six += isNeighbor(x+1, y, tile) ? 1 : 0;
+					six += isNeighbor(x+1, y-1, tile) ? 1 : 0;
+					six += isNeighbor(x, y-1, tile) ? 1 : 0;
+					if(six == 6) {
+						return true;
 					}
-					if(isNeighbor(x-1, y, tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x, y+1, tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x+1, y, tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x+1, y-1), tile) == false) {
-						continue;
-					}
-					if(isNeighbor(x, y-1, tile) == false) {
-						continue;
-					}
-
-					return true;
 				}
 			}
 		}

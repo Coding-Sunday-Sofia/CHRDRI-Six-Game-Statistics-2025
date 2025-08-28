@@ -130,7 +130,7 @@ public partial class MainWindow : Window {
 		for(int x=0; x<board.Length; x++) {
 			for(int y=0; y<board[x].Length; y++) {
 				int six = 0;
-				
+
 				if(x%2 != 0) {
 					six += isNeighbor(x-1, y, tile) ? 1 : 0;
 					six += isNeighbor(x-1, y+1, tile) ? 1 : 0;
@@ -158,7 +158,37 @@ public partial class MainWindow : Window {
 		return false;
 	}
 
+	private bool hasPrimaryLine(char tile) {
+		return false;
+	}
+
+	private bool hasSecondaryLine(char tile) {
+		return false;
+	}
+
+	private bool hasHorizontalLine(int x, int y, char tile) {
+		int six = 0;
+		for(int offset = 0; offset < 6; offset++) {
+			six += isNeighbor(x+offset, y, tile) ? 1 : 0;
+		}
+
+		if(six == 6) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool hasLine(char tile) {
+		for(int x=0; x<board.Length; x++) {
+			for(int y=0; y<board[x].Length; y++) {
+				if(hasHorizontalLine(x, y, tile) ||
+				        hasPrimaryLine(tile) ||
+				        hasSecondaryLine(tile) ) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 

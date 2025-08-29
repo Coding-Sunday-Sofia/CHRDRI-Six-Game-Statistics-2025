@@ -159,17 +159,64 @@ public partial class MainWindow : Window {
 	}
 
 	private bool hasPrimaryLine(char tile) {
+		for(int x=0; x<board.Length; x++) {
+			for(int y=0; y<board[x].Length; y++) {
+				if(x%2 == 0) {
+					int six = 0;
+					for(int dy=0, dx = 0; dx < 6; dx++) {
+						six += isNeighbor(x+dx,y+dy,tile) ? 1 : 0;
+						dy += (dx%2 == 0) ? 0 : 1;
+					}
+					if(six == 6) {
+						return true;
+					}
+				} else {
+					int six = 0;
+					for(int dy=0, dx = 0; dx < 6; dx++) {
+						six += isNeighbor(x+dx,y+dy,tile) ? 1 : 0;
+						dy += (dx%2 == 0) ? 1 : 0;
+					}
+					if(six == 6) {
+						return true;
+					}
+				}
+			}
+		}
+
 		return false;
 	}
 
 	private bool hasSecondaryLine(char tile) {
+		for(int x=0; x<board.Length; x++) {
+			for(int y=0; y<board[x].Length; y++) {
+				if(x%2 == 0) {
+					int six = 0;
+					for(int dy=0, dx = 0; dx < 6; dx++) {
+						six += isNeighbor(x+dx,y-dy,tile) ? 1 : 0;
+						dy += (dx%2 == 0) ? 1 : 0;
+					}
+					if(six == 6) {
+						return true;
+					}
+				} else {
+					int six = 0;
+					for(int dy=0, dx = 0; dx < 6; dx++) {
+						six += isNeighbor(x+dx,y-dy,tile) ? 1 : 0;
+						dy += (dx%2 == 0) ? 0 : 1;
+					}
+					if(six == 6) {
+						return true;
+					}
+				}
+			}
+		}
 		return false;
 	}
 
 	private bool hasHorizontalLine(int x, int y, char tile) {
 		int six = 0;
 		for(int offset = 0; offset < 6; offset++) {
-			six += isNeighbor(x+offset, y, tile) ? 1 : 0;
+			six += isNeighbor(x, y+offset, tile) ? 1 : 0;
 		}
 
 		if(six == 6) {
@@ -385,6 +432,12 @@ public partial class MainWindow : Window {
 				}
 			}
 		}
+		/*
+		for(int dy=0, dx = 0; dx < 6; dx++) {
+			((Polygon)hexButtons[10+dx,10+dy].Content).Fill=new SolidColorBrush(Colors.Green);
+			dy += (dx%2 == 0) ? 0 : 1;
+		}
+		*/
 	}
 
 	private int rows = 42;

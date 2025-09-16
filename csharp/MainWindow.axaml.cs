@@ -239,7 +239,65 @@ public partial class MainWindow : Window {
 		return false;
 	}
 
+	private bool hasUpSideDownTriangle(int x, int y, char tile) {
+		int six = 0;
+		if (x % 2 != 0) {
+			six += isNeighbor(x, y, tile) ? 1 : 0;
+			six += isNeighbor(x, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x, y+2, tile) ? 1 : 0;
+			six += isNeighbor(x-1, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x-1, y+2, tile) ? 1 : 0;
+			six += isNeighbor(x-2, y+1, tile) ? 1 : 0;
+		} else {
+			six += isNeighbor(x, y, tile) ? 1 : 0;
+			six += isNeighbor(x, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x, y+2, tile) ? 1 : 0;
+			six += isNeighbor(x-1, y, tile) ? 1 : 0;
+			six += isNeighbor(x-1, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x-2, y+1, tile) ? 1 : 0;
+		}
+
+		if (six == 6) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool hasDownSideUpTriangle(int x, int y, char tile) {
+		int six = 0;
+		if (x % 2 != 0) {
+			six += isNeighbor(x, y, tile) ? 1 : 0;
+			six += isNeighbor(x, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x, y+2, tile) ? 1 : 0;
+			six += isNeighbor(x+1, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x+1, y+2, tile) ? 1 : 0;
+			six += isNeighbor(x+2, y+1, tile) ? 1 : 0;
+		} else {
+			six += isNeighbor(x, y, tile) ? 1 : 0;
+			six += isNeighbor(x, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x, y+2, tile) ? 1 : 0;
+			six += isNeighbor(x+1, y, tile) ? 1 : 0;
+			six += isNeighbor(x+1, y+1, tile) ? 1 : 0;
+			six += isNeighbor(x+2, y+1, tile) ? 1 : 0;
+		}
+
+		if (six == 6) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private bool hasTriangle(char tile) {
+		for (int x = 0; x < board.Length; x++) {
+			for (int y = 0; y < board[x].Length; y++) {
+				if (hasUpSideDownTriangle(x, y, tile) ||
+				        hasDownSideUpTriangle(x, y, tile)) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -344,13 +402,21 @@ public partial class MainWindow : Window {
 				return true;
 			}
 			/*
-			((Polygon)hexButtons[x-1,y].Content).Fill=new SolidColorBrush(Colors.Green);
-			((Polygon)hexButtons[x-1,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y].Content).Fill=new SolidColorBrush(Colors.Green);
 			((Polygon)hexButtons[x,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+2].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-1,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-1,y+2].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-2,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			/**/
+			/*
+			((Polygon)hexButtons[x,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+2].Content).Fill=new SolidColorBrush(Colors.Green);
 			((Polygon)hexButtons[x+1,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
-			((Polygon)hexButtons[x+1,y].Content).Fill=new SolidColorBrush(Colors.Green);
-			((Polygon)hexButtons[x,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
-			*/
+			((Polygon)hexButtons[x+1,y+2].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x+2,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			/**/
 		} else {
 			if(isNeighbor(x-1, y-1) == true) {
 				return true;
@@ -371,13 +437,21 @@ public partial class MainWindow : Window {
 				return true;
 			}
 			/*
-			((Polygon)hexButtons[x-1,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
-			((Polygon)hexButtons[x-1,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y].Content).Fill=new SolidColorBrush(Colors.Green);
 			((Polygon)hexButtons[x,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+2].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-1,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-1,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x-2,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			/**/
+			/*
+			((Polygon)hexButtons[x,y].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x,y+2].Content).Fill=new SolidColorBrush(Colors.Green);
 			((Polygon)hexButtons[x+1,y].Content).Fill=new SolidColorBrush(Colors.Green);
-			((Polygon)hexButtons[x+1,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
-			((Polygon)hexButtons[x,y-1].Content).Fill=new SolidColorBrush(Colors.Green);
-			*/
+			((Polygon)hexButtons[x+1,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			((Polygon)hexButtons[x+2,y+1].Content).Fill=new SolidColorBrush(Colors.Green);
+			/**/
 		}
 		return false;
 	}
